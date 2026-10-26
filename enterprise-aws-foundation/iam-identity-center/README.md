@@ -1,15 +1,16 @@
 # IAM Identity Center
 
-Part of [Enterprise AWS Foundation](../README.md).
+## Demonstration focus
 
-## Objectives
+- Identity source, users, groups, and MFA.
+- Permission sets and account assignments.
+- How an assigned permission set provides access to an AWS account through an IAM role.
+- Difference between workforce access and workload IAM roles.
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+## Discussion prompts
 
-## Learning materials
+1. Why assign access to groups rather than individually?
+2. How would a read-only auditor gain access to Development and Production accounts?
+3. Does a permission set with AdministratorAccess override an SCP? **No.**
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
-
-## Lab guidance
-
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+**Student deliverable:** a simple access matrix mapping groups, accounts, and permission sets. No live account provisioning required.
