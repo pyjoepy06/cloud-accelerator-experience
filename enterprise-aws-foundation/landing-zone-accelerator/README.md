@@ -1,15 +1,7 @@
-# Landing Zone Accelerator
+# Landing Zone Accelerator on AWS
 
-Part of [Enterprise AWS Foundation](../README.md).
+**Session 1 delivery: live instructor demonstration only; no student deployment.**
 
-## Objectives
+Explain how Landing Zone Accelerator can automate opinionated security, networking, logging, and governance configuration in an AWS multi-account environment. Distinguish it from AWS Control Tower; they are related but not interchangeable.
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
-
-## Learning materials
-
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
-
-## Lab guidance
-
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+Use only explicitly approved client views. Disable recording/transcription and avoid publishing client-specific configurations. Use sanitized synthetic diagrams for any shareable follow-up.
