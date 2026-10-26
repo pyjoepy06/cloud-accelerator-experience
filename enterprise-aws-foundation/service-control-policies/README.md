@@ -1,15 +1,21 @@
-# Service Control Policies
+# IAM Policies and Service Control Policies (SCPs)
 
-Part of [Enterprise AWS Foundation](../README.md).
+## Key principles
 
-## Objectives
+- IAM policies can grant or deny permissions to principals, subject to the rest of AWS policy evaluation.
+- SCPs define maximum available permissions for affected principals in member accounts; **SCPs never grant permissions**.
+- Explicit deny overrides allow. An AdministratorAccess permission set cannot bypass an applicable SCP deny.
+- SCPs do not restrict principals in the organization's management account and have exceptions such as service-linked roles. Resource policies, permission boundaries, and session policies can also affect authorization.
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+## Guided scenario
 
-## Learning materials
+An engineer signs in using IAM Identity Center with an AdministratorAccess permission set but receives AccessDenied when attempting to stop CloudTrail logging. The organization's SCP explicitly denies `cloudtrail:StopLogging`.
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+**Explain:** The IAM role allows the API action, but the SCP sets a stricter maximum and denies it. Investigate the AWS error message, principal/account, and SCPs inherited through the account's OU hierarchy. Do not remove organizational controls simply to make the operation succeed.
 
-## Lab guidance
+## Examples
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+- [Illustrative SCP: deny stopping CloudTrail logging](deny-cloudtrail-stop-logging.json)
+- [Guided policy walkthrough](../labs/governance-policy-walkthrough.md)
+
+> The sample is intentionally narrow. Production CloudTrail protection requires additional controls, including governance around trail deletion, configuration changes, and access to logs.
