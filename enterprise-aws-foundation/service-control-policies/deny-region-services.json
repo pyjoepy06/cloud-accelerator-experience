@@ -1,0 +1,45 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyNonUSRegions",
+      "Effect": "Deny",
+      "NotAction": [
+        "account:*",
+        "acm:*",
+        "aws-marketplace-management:*",
+        "aws-marketplace:*",
+        "aws-portal:*",
+        "budgets:*",
+        "ce:*",
+        "cloudfront:*",
+        "consolidatedbilling:*",
+        "cur:*",
+        "globalaccelerator:*",
+        "health:*",
+        "iam:*",
+        "networkmanager:*",
+        "organizations:*",
+        "payments:*",
+        "pricing:*",
+        "route53:*",
+        "route53domains:*",
+        "shield:*",
+        "support:*",
+        "tax:*",
+        "waf:*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-east-2",
+            "us-west-1",
+            "us-west-2"
+          ]
+        }
+      }
+    }
+  ]
+}

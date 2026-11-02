@@ -37,3 +37,12 @@ The Control Tower/Landing Zone Accelerator segment is **instructor-only**. Stude
 ## Success criteria
 
 A student can sketch a multi-account design, explain how workforce access reaches an AWS account, and diagnose an SCP explicit deny without confusing SCPs with grants of permission.
+
+## High Level AWS Organization Diagram Example
+
+![AWS Organizations](docs/AWS-Organizations-Example.png)
+
+
+## Control Tower with Landing Zone Accelerator (LZA) Automation Flow
+
+![Control Tower LZA Flow](docs/Multi-Account_Governance_at_Scale.png)
