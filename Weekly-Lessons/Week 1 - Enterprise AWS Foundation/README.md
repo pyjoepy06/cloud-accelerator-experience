@@ -6,10 +6,10 @@
 
 ## Learning objectives
 
-1. Explain the management account, member accounts, organizational units (OUs), and consolidated billing in [AWS Organizations](aws-organizations/README.md).
-2. Explain [IAM Identity Center](iam-identity-center/README.md) users/groups, permission sets, and AWS account assignments.
-3. Distinguish [IAM identity policies and SCPs](service-control-policies/README.md), including explicit deny and permission boundaries.
-4. Recognize the roles of [AWS Control Tower](control-tower/README.md) and [Landing Zone Accelerator](landing-zone-accelerator/README.md) without deploying either.
+1. Explain the management account, member accounts, organizational units (OUs), and consolidated billing in [AWS Organizations](enterprise-aws-foundation/aws-organizations/README.md).
+2. Explain [IAM Identity Center](enterprise-aws-foundation/iam-identity-center/README.md) users/groups, permission sets, and AWS account assignments.
+3. Distinguish [IAM identity policies and SCPs](enterprise-aws-foundation/service-control-policies/README.md), including explicit deny and permission boundaries.
+4. Recognize the roles of [AWS Control Tower](centerprise-aws-foundation/ontrol-tower/README.md) and [Landing Zone Accelerator](enterprise-aws-foundation/landing-zone-accelerator/README.md) without deploying either.
 5. Explain an AccessDenied scenario where AdministratorAccess is limited by an SCP.
 
 ## Two-hour instructor flow
@@ -30,9 +30,9 @@ The Control Tower/Landing Zone Accelerator segment is **instructor-only**. Stude
 
 ## Labs and assignments
 
-- [Guided governance lab](labs/governance-policy-walkthrough.md) — no Control Tower or LZA deployment required.
-- [Student assignment](assignments/enterprise-foundation-assignment.md) — design an OU structure, explain identity access, and reason about IAM/SCP behavior.
-- [SCP sample](service-control-policies/deny-cloudtrail-stop-logging.json) — illustrative training policy; test in a sandbox before use.
+- [Guided governance lab](enterprise-aws-foundation/labs/governance-policy-walkthrough.md) — no Control Tower or LZA deployment required.
+- [Student assignment](enterprise-aws-foundation/assignments/enterprise-foundation-assignment.md) — design an OU structure, explain identity access, and reason about IAM/SCP behavior.
+- [SCP sample](enterprise-aws-foundation/service-control-policies/deny-cloudtrail-stop-logging.json) — illustrative training policy; test in a sandbox before use.
 
 ## Success criteria
 
@@ -40,9 +40,9 @@ A student can sketch a multi-account design, explain how workforce access reache
 
 ## High Level AWS Organization Diagram Example
 
-![AWS Organizations](docs/AWS-Organizations-Example.png)
+![AWS Organizations](enterprise-aws-foundation/docs/AWS-Organizations-Example.png)
 
 
 ## Control Tower with Landing Zone Accelerator (LZA) Automation Flow
 
-![Control Tower LZA Flow](docs/Multi-Account_Governance_at_Scale.png)
+![Control Tower LZA Flow](enterprise-aws-foundation/docs/Multi-Account_Governance_at_Scale.png)
