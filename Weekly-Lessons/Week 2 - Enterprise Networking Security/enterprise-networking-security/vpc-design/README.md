@@ -17,6 +17,11 @@ Explain CIDR planning, public/private subnets, route-table associations, and out
 
 Trace the request and response from a private EC2 instance to an internet HTTPS endpoint. Explain the role of the local route, default route, NAT gateway, and IGW.
 
+## High Level Diagrams
+
+![Standard VPC Design](../docs/standard-vpc-design.png)
+![Enterprise VPC Design](../docs/enterprise-vpc-design.png)
+
 ## Hands-on assignment
 
 Follow [Build a Public and Private VPC Lab](../assignments/README.md) to create two subnets, a NAT gateway, and two EC2 instances. Capture connectivity evidence and complete cleanup.

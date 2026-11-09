@@ -20,7 +20,7 @@ Create a VPC with public and private subnets, deploy one EC2 instance in each, a
 
 ## High Level Diagram
 
-![Standard VPC Design](enterprise-networking-security/docs/standard-vpc-design.png)
+![Standard VPC Design](../docs/standard-vpc-design.png)
 
 ## 1. Build the network
 

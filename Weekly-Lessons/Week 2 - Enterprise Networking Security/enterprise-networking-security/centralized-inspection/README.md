@@ -12,6 +12,10 @@ The networking team owns traffic paths, while the security team manages inspecti
 
 **Centralized inspection only sees traffic routed through it.** Sharing or attaching a Transit Gateway does not automatically inspect traffic.
 
+## High Level Design
+
+![Centralize Inspection High Level](../docs/centralized-firewall-vpc-design.png)
+
 ## Main components
 
 | Component | Role |
