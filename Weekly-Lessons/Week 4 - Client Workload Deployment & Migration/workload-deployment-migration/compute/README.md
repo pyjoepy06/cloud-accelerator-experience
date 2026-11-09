@@ -1,15 +1,20 @@
-# Compute
+# Compute Migration
 
-Part of [Workload Deployment Migration](../README.md).
+[Back to Week 4](../../README.md)
 
-## Objectives
+**Status: Planned instructor demonstration — pending instructor testing.** Exact OS images, networking, commands, and timing will be confirmed after rehearsal. No live migration or AWS deployment is required from students.
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+## Focus
 
-## Learning materials
+The instructor's EC2 servers represent source machines. MGN replication and test/cutover launches produce separate target EC2 resources.
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+Review OS support, instance sizing, CPU architecture compatibility, IAM roles, management access, launch templates, security groups, and application startup behavior.
 
-## Lab guidance
+## Validation questions
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+- Does the target boot and pass EC2 status checks?
+- Does the application start and answer a functional request?
+- Are required dependencies and management paths available?
+- Does sizing reflect measured needs rather than allocated source capacity alone?
+
+See the [planned MGN demo](../labs/README.md). A successful EC2 launch is only one acceptance check.

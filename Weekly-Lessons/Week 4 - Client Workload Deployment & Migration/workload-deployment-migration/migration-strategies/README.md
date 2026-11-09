@@ -1,15 +1,30 @@
 # Migration Strategies
 
-Part of [Workload Deployment Migration](../README.md).
+[Back to Week 4](../../README.md)
 
-## Objectives
+## Connect to Week 3
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+Revisit Why, RTO/RPO, 6 Rs, Timeline, and Budget before selecting a migration method.
 
-## Learning materials
+| Strategy | Meaning |
+| --- | --- |
+| Rehost | Move the workload with limited architectural change |
+| Replatform | Make targeted platform changes |
+| Repurchase | Replace with another product or SaaS |
+| Refactor / Re-architect | Change the application architecture |
+| Retire | Decommission an unneeded workload |
+| Retain | Keep it in its current environment for now |
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+AWS also describes a seventh strategy, Relocate.
 
-## Lab guidance
+## This week's approach
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+The planned agent-based MGN showcase illustrates **rehosting**. EC2 source servers simulate on-premises machines; actual migration suitability and detailed procedure remain pending instructor testing.
+
+Week 3's AWS Transform assessment helps inform decisions. MGN handles the demonstrated server replication and launch lifecycle. Neither replaces business approval or application validation.
+
+## Migration gates
+
+Scope agreed → prerequisites validated → replication healthy → test accepted → cutover approved → application accepted → migration finalized.
+
+Define rollback and cleanup before starting. See the [demo plan](../labs/README.md).

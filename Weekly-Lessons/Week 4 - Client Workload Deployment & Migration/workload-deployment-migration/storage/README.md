@@ -1,15 +1,19 @@
-# Storage
+# Storage During Migration
 
-Part of [Workload Deployment Migration](../README.md).
+[Back to Week 4](../../README.md)
 
-## Objectives
+## Focus
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+MGN replicates source disk data into staging resources and uses it to create target volumes. The planned demonstration uses synthetic data on EC2 source servers.
 
-## Learning materials
+Discuss disk inventory, replication lag, encryption/KMS permissions, capacity, performance, snapshots, and target volume mapping. Review which data is actually on replicated disks versus external shares or services.
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+## Validation
 
-## Lab guidance
+Compare expected files and application data between source and target. Use checksums or application checks where appropriate. Do not assume disk replication guarantees application-consistent database recovery.
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+## Cost awareness
+
+Staging volumes, target volumes, and retained snapshots can continue to incur costs. Include them in the [demo cleanup review](../labs/README.md).
+
+No separate storage deployment is assigned.

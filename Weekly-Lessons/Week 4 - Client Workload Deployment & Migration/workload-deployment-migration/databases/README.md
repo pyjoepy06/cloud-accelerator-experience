@@ -1,15 +1,19 @@
-# Databases
+# Database Migration Considerations
 
-Part of [Workload Deployment Migration](../README.md).
+[Back to Week 4](../../README.md)
 
-## Objectives
+## Focus
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+The planned MGN demonstration is a server rehosting exercise, not a promise of database modernization or a separate managed-database migration.
 
-## Learning materials
+A database hosted on a replicated server still requires application-consistency planning, supported configuration, recovery validation, and careful handling of writes during cutover.
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+## Discovery questions
 
-## Lab guidance
+- What engine/version, licensing, dependencies, and data volume are involved?
+- What RTO/RPO and planned outage are approved?
+- How will writes be quiesced, synchronized, and checked?
+- Is rehosting appropriate, or should an engine-native process or database migration service be assessed?
+- Who owns functional testing, backup/recovery validation, and rollback?
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+Do not run source and test databases against the same production integrations. No database service deployment is required for this conceptual section.

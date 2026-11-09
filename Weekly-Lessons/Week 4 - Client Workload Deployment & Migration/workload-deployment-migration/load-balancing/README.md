@@ -1,15 +1,17 @@
-# Load Balancing
+# Load Balancing and Migration Cutover
 
-Part of [Workload Deployment Migration](../README.md).
+[Back to Week 4](../../README.md)
 
-## Objectives
+## Focus
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+A migrated server must receive the intended traffic only after validation and approval. Depending on the application, cutover may involve DNS, load-balancer targets, or another application entry point.
 
-## Learning materials
+## Discussion
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+- Validate target health-check protocol, port, path, security rules, and application readiness.
+- Test the target independently before directing users to it.
+- Plan traffic switching, DNS caching/TTL where relevant, and observation periods.
+- Define rollback triggers and how data written after cutover would be handled.
+- Assign application acceptance and traffic-switching ownership.
 
-## Lab guidance
-
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+The [MGN demo](../labs/README.md) will explain these decisions. A separate paid load balancer deployment is not required, and an automated traffic switch is not assumed.
