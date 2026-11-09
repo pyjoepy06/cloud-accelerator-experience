@@ -18,6 +18,10 @@ Create a VPC with public and private subnets, deploy one EC2 instance in each, a
 - Set a billing alert. EC2, EBS, NAT gateway hours/data processing, and public IPv4 addresses can incur charges. Do not assume Free Tier covers this lab. Review [VPC pricing](https://aws.amazon.com/vpc/pricing/) and [EC2 pricing](https://aws.amazon.com/ec2/pricing/).
 - Delete the resources when finished. Stopping EC2 does not stop NAT gateway or storage charges.
 
+## High Level Diagram
+
+![Standard VPC Design](enterprise-networking-security/docs/standard-vpc-design.png)
+
 ## 1. Build the network
 
 In the VPC console, create **VPC only**, then create the following resources manually so you understand each connection. Use IPv4 only for this exercise.
