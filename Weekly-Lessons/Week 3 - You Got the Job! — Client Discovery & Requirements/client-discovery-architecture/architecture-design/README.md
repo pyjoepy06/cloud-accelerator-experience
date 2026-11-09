@@ -1,15 +1,21 @@
-# Architecture Design
+# Architecture Design from Requirements
 
-Part of [Client Discovery Architecture](../README.md).
+[Back to Week 3](../../README.md)
 
-## Objectives
+## Goal
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+Translate confirmed business and technical requirements into a preliminary AWS design.
 
-## Learning materials
+## Design exercise
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+Using your [discovery notes](../requirements-gathering/README.md), sketch:
 
-## Lab guidance
+- Account boundaries, identity access, and security ownership.
+- VPCs, subnet roles, connectivity, DNS, and application dependencies.
+- Application/data placement and the proposed migration strategy.
+- Recovery approach aligned to approved RTO/RPO.
+- Monitoring, backup, validation, and operational ownership.
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+Annotate each major choice with its requirement, rationale, and tradeoff. Identify unknowns that prevent final sizing, cost estimation, or architecture approval.
+
+**Deliverable:** One preliminary diagram and a short decision log. No AWS deployment is required. Revisit the design after application discovery and performance measurements.

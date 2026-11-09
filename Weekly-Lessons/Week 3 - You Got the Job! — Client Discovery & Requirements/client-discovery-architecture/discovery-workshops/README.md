@@ -1,15 +1,22 @@
 # Discovery Workshops
 
-Part of [Client Discovery Architecture](../README.md).
+[Back to Week 3](../../README.md)
 
-## Objectives
+## Goal
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+Practice leading a client conversation before recommending AWS services.
 
-## Learning materials
+## Workshop flow
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+1. Confirm attendees, decision-makers, purpose, and scope.
+2. Ask the [five core migration questions](../requirements-gathering/README.md).
+3. Ask application, infrastructure, security, networking, operations, and finance owners about dependencies and constraints.
+4. Review the inventory and identify evidence gaps.
+5. Read back requirements, assumptions, risks, and unresolved decisions.
+6. Agree on actions, owners, due dates, and approval criteria.
 
-## Lab guidance
+## Role-play
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+One learner is the architect, another is the client, and another records evidence and open questions. Rotate roles. Ask open questions first, then clarify with specific examples.
+
+**Deliverable:** Meeting notes with confirmed facts, assumptions, decisions, and action items kept distinct. Do not promise cost savings or a migration date without evidence.

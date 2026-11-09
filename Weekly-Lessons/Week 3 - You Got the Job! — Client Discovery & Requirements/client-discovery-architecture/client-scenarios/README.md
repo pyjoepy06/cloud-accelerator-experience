@@ -1,15 +1,23 @@
-# Client Scenarios
+# Client Scenario — A VMware Migration Discovery Call
 
-Part of [Client Discovery Architecture](../README.md).
+[Back to Week 3](../../README.md)
 
-## Objectives
+A fictional company wants to move VMware workloads to AWS. Leadership says, “We want better resilience and lower costs.” The infrastructure team supplies one of the [simulated RVTools workbooks](../requirements-gathering/README.md).
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
+The application owners have not yet confirmed recovery targets, dependencies, migration strategies, deadlines, or budget.
 
-## Learning materials
+## Your role
 
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
+Lead discovery. Clarify what better resilience and lower costs mean, and identify what is needed before committing to a design or migration plan.
 
-## Lab guidance
+Ask the five core questions: **Why, RTO/RPO, 6 Rs, Timeline, Budget**.
 
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+## Instructor prompts
+
+- “Can we move every server next month?”
+- “Why can't we size AWS directly from the allocated VMware CPU and RAM?”
+- “Which systems should we retire rather than migrate?”
+- “How will we know the application works after cutover?”
+- “What happens if the migration fails?”
+
+Client answers introduced during role-play are fictional assumptions, not facts contained in the workbook. Record them clearly and identify the business owner who would approve them.
