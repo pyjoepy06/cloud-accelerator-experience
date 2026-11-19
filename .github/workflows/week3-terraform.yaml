@@ -64,6 +64,46 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -input=false -no-color
+  
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'apply'
+
+    environment: terraform-apply
+
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        working-directory: 'Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::948806324987:role/GitHubActions-Terraform-Role
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -input=false tfplan
+
 
 
       
