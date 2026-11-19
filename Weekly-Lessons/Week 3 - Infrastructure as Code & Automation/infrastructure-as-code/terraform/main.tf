@@ -39,7 +39,7 @@ resource "aws_subnet" "web_subnet" {
 }
 
 resource "aws_subnet" "app_subnet" {
-  vpc_id            = aws_vpc.class_vpc.id
+  vpc_id                  = aws_vpc.class_vpc.id
   cidr_block              = "10.30.2.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
@@ -50,7 +50,7 @@ resource "aws_subnet" "app_subnet" {
 }
 
 resource "aws_subnet" "db_subnet" {
-  vpc_id            = aws_vpc.class_vpc.id
+  vpc_id                  = aws_vpc.class_vpc.id
   cidr_block              = "10.30.3.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
@@ -103,14 +103,14 @@ resource "aws_route" "web_internet_route" {
 
 # Classroom-only internet routes for apt package installation.
 resource "aws_route" "app_internet_route" {
-  route_table_id = aws_route_table.app_route_table.id
+  route_table_id         = aws_route_table.app_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.internet_gateway.id
+  gateway_id             = aws_internet_gateway.internet_gateway.id
 }
 resource "aws_route" "db_internet_route" {
-  route_table_id = aws_route_table.db_route_table.id
+  route_table_id         = aws_route_table.db_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.internet_gateway.id
+  gateway_id             = aws_internet_gateway.internet_gateway.id
 }
 
 # THREE EXPLICIT ROUTE TABLE ASSOCIATIONS
