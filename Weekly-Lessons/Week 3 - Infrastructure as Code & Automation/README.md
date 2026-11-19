@@ -34,7 +34,7 @@ Also install the AWS CLI: [Windows](../../How-To/Windows/AWS-CLI.md) | [macOS](.
 3. [Student assignment](infrastructure-as-code/assignments/README.md)
 4. **Final project:** [Automation Pipeline — GitHub Actions + Terraform](infrastructure-as-code/automation-pipeline/README.md)
 
-The final project combines the former GitHub Actions and CI/CD folders. Automatic GitHub checks run on PRs; AWS deployment is a separate, manual instructor-controlled step using OIDC and S3 remote state. No Terraform loops, `count`, `for_each`, `locals`, modules, or input variables are added.
+The final project combines the former GitHub Actions and CI/CD folders. No workflow is prebuilt. Students will manually create their first GitHub Actions YAML, then learn AWS OIDC, S3 remote state, and instructor-controlled deployment. No Terraform loops, `count`, `for_each`, `locals`, modules, or input variables are added.
 
 Other introductions: [automation](infrastructure-as-code/automation/README.md) and [CloudFormation](infrastructure-as-code/cloudformation/README.md).
 

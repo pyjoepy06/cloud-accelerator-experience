@@ -1,87 +1,88 @@
-# Automation Pipeline — GitHub Actions + Terraform
+# Automation Pipeline — Build GitHub Actions Manually
 
-This folder combines the old **GitHub Actions** and **CI/CD Pipelines** sections into one beginner-friendly final project. The Terraform files remain **static**: no input variables, `locals`, `count`, `for_each`, or modules.
+**Instructor-led final project. No pipeline workflow is pre-created.** We will build it together in GitHub, one step at a time. The student Terraform remains static: no loops, `count`, `for_each`, `locals`, modules, or input variables.
 
-## What students will build
+## What we'll learn
 
-```text
-Student edits Terraform
-       |
-       v
-Push branch + open Pull Request
-       |
-       v
-GitHub Actions: terraform fmt -check + terraform validate
-       |
-       v
-Instructor reviews and merges
-       |
-       v
-Actions > Week 3 Terraform Pipeline > Run workflow
-       |
-       v
-GitHub OIDC -> AWS role -> S3 remote state -> terraform plan
-       |
-       v
-Instructor chooses apply or destroy
+1. Create the workflow file manually in GitHub.
+2. Run `terraform fmt -check` and `terraform validate` when code changes.
+3. Set up AWS authentication using GitHub OIDC.
+4. Configure an S3 bucket for Terraform remote state.
+5. Add `terraform plan`, then a manual deployment workflow with `terraform apply`.
+6. Add a safe manual `terraform destroy` and verify cleanup.
+
+## Lesson 1 — Create your first GitHub Actions workflow (no AWS access required)
+
+1. Open your GitHub repository.
+2. Select **Actions** and choose **set up a workflow yourself** if offered, or select **Add file → Create new file** from the Code tab.
+3. Name the file `.github/workflows/week3-terraform.yml`. GitHub Actions only recognizes workflow files in the repository-root `.github/workflows/` folder.
+4. **During class**, type the following starter YAML yourself:
+
+```yaml
+name: Week 3 Terraform Checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform'
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
 ```
 
-The workflow lives at the **repository root**, where GitHub expects it: [`.github/workflows/week3-terraform.yml`](../../../../.github/workflows/week3-terraform.yml).
+5. Commit the new workflow on a class practice branch, open a pull request, and click **Actions** to watch the job run.
+6. If the formatting check fails, run `terraform fmt` locally in the Terraform directory, commit the formatted files, and push again.
+7. Click each job step and explain its purpose: checkout downloads code, setup installs Terraform, init downloads providers, fmt checks style, validate checks configuration.
 
-## Part 1 — Install tools
+**Stop here for the first demonstration.** No AWS credentials, state bucket, IAM role, or deployed infrastructure are needed to run these checks.
 
-Use the [Windows Terraform guide](../../../../How-To/Windows/Terraform.md) or [macOS Terraform guide](../../../../How-To/macOS/Terraform.md), and the AWS CLI guides in the same `How-To` directory. Verify:
+## Lesson 2 — AWS access with OIDC (after Lesson 1 works)
 
-```bash
-git --version
-terraform version
-aws --version
-```
+1. In a dedicated AWS lab account, create an IAM OIDC identity provider for `https://token.actions.githubusercontent.com` with audience `sts.amazonaws.com` (if it does not already exist).
+2. Create a role that trusts **only** your specific GitHub repository and protected environment, using `token.actions.githubusercontent.com:aud` and `token.actions.githubusercontent.com:sub` conditions.
+3. Give the role only the permissions necessary for this isolated Terraform lab and its S3 state. Do not use permanent access keys.
+4. Create a GitHub environment named `terraform-lab` and configure required reviewers if supported by your repository and plan.
+5. Set GitHub Actions variable `AWS_ROLE_ARN` to the role ARN.
+6. Later, add the `aws-actions/configure-aws-credentials@v4` step and `id-token: write` permission **only to the deployment job**.
 
-## Part 2 — Set up GitHub
+## Lesson 3 — S3 remote state
 
-1. Sign in to GitHub and open your **own fork or class repository**. Do not give students write access to the instructor's main branch.
-2. Clone it: `git clone https://github.com/YOUR-USERNAME/YOUR-REPO.git`.
-3. Open the repo and locate `Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform/`.
-4. Create a new branch: `git checkout -b week3-terraform-lab`.
-5. Make a small change to a tag in `main.tf` (keep it static).
-6. Run `terraform fmt` locally; then `git add .`, `git commit -m "Practice Terraform pipeline"`, and `git push -u origin week3-terraform-lab`.
-7. On GitHub, open a **Pull Request** to `main`. Click **Actions** to see the automatic formatting and validation checks. Fix any errors before merging.
+1. Create a separate private S3 bucket in `us-east-1`; enable versioning, encryption, and Block Public Access.
+2. Give the deployment role scoped access to the state object and its lock file.
+3. Configure the S3 backend and `use_lockfile = true` during the guided deployment lesson. Do not add backend configuration to the beginner starter until ready.
+4. **Never mix local and pipeline state for the same resources.** Destroy any local lab before switching to the pipeline.
 
-**Important:** GitHub only detects Actions workflows from `.github/workflows/` at the repository root. Merely placing a YAML file in this lesson folder will not run it.
+## Lesson 4 — Plan, apply, and destroy
 
-## Part 3 — Instructor AWS setup for optional deployment
+After OIDC and S3 work, add `terraform plan` to the deployment job. Then configure a **manual** GitHub Actions trigger (`workflow_dispatch`) for `apply` and `destroy`, with environment approval where available. Review the plan before running the apply step. Deploy only to a disposable AWS training account; confirm the resources in AWS and then run destroy.
 
-The automatic pull-request checks **do not** need AWS credentials. Actual AWS deployment is **manual** and requires the following one-time instructor setup.
-
-1. In a dedicated AWS lab account, create a **private S3 bucket** in `us-east-1` for Terraform state. Enable versioning, default encryption, and Block Public Access. Keep this bucket outside the Week 3 Terraform lab so `terraform destroy` cannot delete its own state.
-2. In AWS IAM, create a GitHub **OIDC identity provider** with URL `https://token.actions.githubusercontent.com` and audience `sts.amazonaws.com`, if one does not already exist.
-3. Create an IAM role for the workflow. In its trust policy restrict `token.actions.githubusercontent.com:aud` to `sts.amazonaws.com` and `token.actions.githubusercontent.com:sub` to **your exact GitHub repository and environment**: `repo:OWNER/REPO:environment:terraform-lab`. Do not use a wildcard for all GitHub repositories.
-4. Attach a **lab-scoped** permissions policy that allows the necessary EC2/VPC/SSM operations and S3 access to only the state bucket and `week3/terraform.tfstate` (plus its `.tflock` object). Ask the instructor or cloud administrator to review this policy; avoid long-lived AWS access keys or granting administrator permissions to students.
-5. In GitHub repository **Settings → Environments**, create an environment named `terraform-lab`. Configure required reviewers where supported by your plan and repository visibility. Restrict deployment branches as appropriate.
-6. In GitHub **Settings → Secrets and variables → Actions → Variables**, create:
-   - `AWS_ROLE_ARN`: the ARN of the IAM role from step 3
-   - `TF_STATE_BUCKET`: your existing S3 state bucket name
-
-The workflow uses GitHub OIDC to obtain short-lived AWS credentials. It generates an S3 backend configuration **only on the GitHub runner**. This keeps the committed student Terraform example simple and locally usable without remote-state setup.
-
-**State warning:** Local Terraform and the pipeline use different state files. **Do not deploy the same lab from both locations.** If the lab was previously applied locally, destroy it locally before switching to pipeline deployment. If a pipeline deployment already exists, use the pipeline's `destroy` action to clean it up.
-
-## Part 4 — Run the pipeline
-
-1. Merge the validated PR to `main`.
-2. Open **Actions → Week 3 Terraform Pipeline → Run workflow**.
-3. Choose `apply`, select `main`, and start the workflow. Review the `check` and `deploy` job logs.
-4. Verify the five subnets, two EC2 instances, and application URL in AWS. The app may take several minutes to initialize.
-5. Run the same workflow again with `destroy` to clean up. Verify the resources are gone.
-
-**Safety:** `apply` and `destroy` make real AWS changes and may incur charges. This workflow uses automatic approval **after** the manual workflow dispatch and any GitHub environment approval; it is for an isolated teaching account only. If your GitHub plan does not support required reviewers for this repository, the person who can run the workflow is the deployment gate.
+**Safety:** GitHub Actions permissions, IAM trust policies, state access, and workflow approvals must be reviewed before enabling deployment. EC2 instances and public IPv4 addresses can incur charges. Never commit secrets, Terraform state, or private keys.
 
 ## Student assignment
 
-- Open a PR that changes one resource tag.
-- Show a passing GitHub Actions `check` job.
-- Explain the difference between `fmt`, `validate`, `plan`, and `apply`.
-- Explain why OIDC is safer than storing permanent AWS keys.
-- With instructor supervision, run `apply`, inspect AWS resources, and run `destroy`.
-- Submit screenshots of the PR, checks, and deployment/cleanup logs. Never submit credentials, state files, or passwords.
+- Create the workflow YAML yourself.
+- Explain what `checkout`, `setup-terraform`, `init`, `fmt`, and `validate` do.
+- Show a passing GitHub Actions check.
+- After instructor approval, extend the workflow with AWS OIDC, remote state, plan, apply, and destroy.
+- Capture the workflow logs and evidence of resource cleanup.
