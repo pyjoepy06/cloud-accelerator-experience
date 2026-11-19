@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Week 3 - EC2 Systems Manager role and instance profile (CloudFormation comparison)
+
+Resources:
+  EC2SSMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: week3-ec2-ssm-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Tags:
+        - Key: Name
+          Value: week3-ec2-ssm-role
+
+  EC2SSMInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: week3-ec2-ssm-profile
+      Roles:
+        - !Ref EC2SSMRole
+
+Outputs:
+  EC2SSMRoleName:
+    Description: Role trusted by EC2
+    Value: !Ref EC2SSMRole
+  EC2SSMInstanceProfileName:
+    Description: Instance profile to attach to EC2
+    Value: !Ref EC2SSMInstanceProfile

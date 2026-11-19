@@ -33,3 +33,11 @@ Wait several minutes for user data to finish. Visit the web URL, `/health`, and 
 5. Destroy the infrastructure and confirm cleanup.
 
 **Do not commit** `.terraform/`, state files, credentials, or plans. Run this only in a disposable AWS training account.
+
+## IAM role and SSM — compare two IaC formats
+
+The separate [`IAM.tf`](IAM.tf) file creates a static EC2 IAM role, attaches the AWS-managed `AmazonSSMManagedInstanceCore` policy, and creates an instance profile. Both EC2 instances in [`servers.tf`](servers.tf) reference that instance profile.
+
+Compare it with the [equivalent CloudFormation template](../cloudformation/ssm-ec2-role.yaml) and the [comparison guide](../cloudformation/README.md). **Do not deploy both examples together in the same AWS account**: they use the same fixed IAM names. IAM is global to the account, not scoped to a VPC.
+
+The role enables SSM permissions, but SSM Session Manager also needs an active SSM Agent and network connectivity to SSM endpoints. Check the Ubuntu instance's SSM Agent status; IAM alone does not ensure connectivity. The classroom design's internet-routed subnets provide outbound connectivity, but agent installation/registration must still be verified.

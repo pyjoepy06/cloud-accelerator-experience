@@ -62,6 +62,7 @@ resource "aws_instance" "db" {
   instance_type = "t3.micro"
   subnet_id = aws_subnet.db_subnet.id
   vpc_security_group_ids = [aws_security_group.db.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_ssm_profile.name
   user_data = templatefile("${path.module}/db-user-data.sh.tftpl", {
     db_password = random_password.mysql.result
   })
@@ -74,6 +75,7 @@ resource "aws_instance" "web" {
   instance_type = "t3.micro"
   subnet_id = aws_subnet.app_subnet.id
   vpc_security_group_ids = [aws_security_group.web.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_ssm_profile.name
   user_data = templatefile("${path.module}/web-user-data.sh.tftpl", {
     db_host = aws_instance.db.private_ip
     db_password = random_password.mysql.result
