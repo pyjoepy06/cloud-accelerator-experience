@@ -104,6 +104,42 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -input=false tfplan
 
+  
+  terraform-destroy:
+    name: Terraform Destroy
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'destroy'
+    runs-on: ubuntu-latest
+
+    environment: terraform-destroy
+
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        working-directory: 'Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::948806324987:role/GitHubActions-Terraform-Role
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -input=false
+
+
 
 
       
