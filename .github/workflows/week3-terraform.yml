@@ -1,0 +1,92 @@
+name: Week 3 Terraform Pipeline
+
+on:
+  pull_request:
+    paths:
+      - 'Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform/**'
+      - '.github/workflows/week3-terraform.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform/**'
+      - '.github/workflows/week3-terraform.yml'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Apply or destroy the Week 3 lab'
+        required: true
+        type: choice
+        options:
+          - apply
+          - destroy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: week3-terraform-deployment
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: 'Weekly-Lessons/Week 3 - Infrastructure as Code & Automation/infrastructure-as-code/terraform'
+
+jobs:
+  check:
+    name: Check Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.10.5'
+      - name: Initialize without remote state
+        run: terraform init -backend=false
+      - name: Check formatting
+        run: terraform fmt -check
+      - name: Validate
+        run: terraform validate
+
+  deploy:
+    name: Manual AWS deployment
+    needs: check
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: terraform-lab
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.10.5'
+      - name: Sign in to AWS with GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Configure S3 state for CI/CD only
+        env:
+          STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+        run: |
+          test -n "$STATE_BUCKET"
+          cat > pipeline-backend.tf <<'EOF'
+          terraform {
+            backend "s3" {}
+          }
+          EOF
+          terraform init \
+            -backend-config="bucket=$STATE_BUCKET" \
+            -backend-config="key=week3/terraform.tfstate" \
+            -backend-config="region=us-east-1" \
+            -backend-config="use_lockfile=true"
+      - name: Preview infrastructure changes
+        run: terraform plan -out=week3.tfplan
+      - name: Apply or destroy
+        run: |
+          if [ "${{ inputs.action }}" = "apply" ]; then
+            terraform apply -auto-approve week3.tfplan
+          else
+            terraform destroy -auto-approve
+          fi

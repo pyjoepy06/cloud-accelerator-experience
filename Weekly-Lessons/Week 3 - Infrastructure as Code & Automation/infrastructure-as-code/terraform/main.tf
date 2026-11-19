@@ -26,7 +26,7 @@ resource "aws_vpc" "class_vpc" {
   }
 }
 
-# FIVE SUBNETS ACROSS TWO AVAILABILITY ZONES
+# THREE SUBNETS
 resource "aws_subnet" "web_subnet" {
   vpc_id                  = aws_vpc.class_vpc.id
   cidr_block              = "10.30.1.0/24"
@@ -57,30 +57,6 @@ resource "aws_subnet" "db_subnet" {
 
   tags = {
     Name = "week3-db-lab-public"
-  }
-}
-
-# SECOND WEB SUBNET - Availability Zone B
-resource "aws_subnet" "web_subnet_b" {
-  vpc_id                  = aws_vpc.class_vpc.id
-  cidr_block              = "10.30.4.0/24"
-  availability_zone       = "us-east-1b"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "week3-web-public-b"
-  }
-}
-
-# SECOND DATABASE SUBNET - Availability Zone B
-resource "aws_subnet" "db_subnet_b" {
-  vpc_id                  = aws_vpc.class_vpc.id
-  cidr_block              = "10.30.5.0/24"
-  availability_zone       = "us-east-1b"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "week3-db-lab-public-b"
   }
 }
 
@@ -137,7 +113,7 @@ resource "aws_route" "db_internet_route" {
   gateway_id = aws_internet_gateway.internet_gateway.id
 }
 
-# FIVE EXPLICIT ROUTE TABLE ASSOCIATIONS
+# THREE EXPLICIT ROUTE TABLE ASSOCIATIONS
 resource "aws_route_table_association" "web_association" {
   subnet_id      = aws_subnet.web_subnet.id
   route_table_id = aws_route_table.web_route_table.id
@@ -150,18 +126,6 @@ resource "aws_route_table_association" "app_association" {
 
 resource "aws_route_table_association" "db_association" {
   subnet_id      = aws_subnet.db_subnet.id
-  route_table_id = aws_route_table.db_route_table.id
-}
-
-# Reuse the existing web route table in Availability Zone B.
-resource "aws_route_table_association" "web_association_b" {
-  subnet_id      = aws_subnet.web_subnet_b.id
-  route_table_id = aws_route_table.web_route_table.id
-}
-
-# Reuse the existing database route table in Availability Zone B.
-resource "aws_route_table_association" "db_association_b" {
-  subnet_id      = aws_subnet.db_subnet_b.id
   route_table_id = aws_route_table.db_route_table.id
 }
 
