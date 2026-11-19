@@ -1,17 +1,11 @@
-# Week 3 Assignment — Read, Build, Explain
+# Week 3 Assignment
 
-Use the [static Terraform starter](../terraform/main.tf) and [guided lab](../labs/README.md).
+Using the [Terraform starter](../terraform/README.md), submit:
+1. A successful `terraform validate` result.
+2. A screenshot of the plan showing **two EC2 instances**.
+3. A screenshot showing three subnets and their route tables.
+4. The running HarborPoint page and `/customers` JSON.
+5. A short explanation of `aws_subnet.app_subnet.id`, `aws_subnet.db_subnet.id`, and why the database security group allows MySQL only from the web security group.
+6. Proof of `terraform destroy` cleanup.
 
-## Deliverables
-1. Screenshot or text output showing `terraform validate` succeeded.
-2. Screenshot of `terraform plan` **before** applying.
-3. Screenshot of the VPC and its three subnets after applying.
-4. Screenshot of the three route tables showing that only the web route table has an Internet Gateway default route.
-5. In your own words (2–3 sentences each): What is a resource? What does `aws_vpc.class_vpc.id` mean? Why is the database subnet private?
-6. Screenshot or text output showing `terraform destroy` completed.
-
-## Stretch task (only after class)
-Change the VPC CIDR from a hardcoded string to a Terraform input variable. Keep the three subnet blocks separate. **Do not use loops, `count`, `for_each`, `locals`, or modules.**
-
-## Submission
-Submit screenshots and a short README with your answers. Do not submit AWS credentials, state files, or private keys. Destroy resources when finished.
+**Optional live-class extension:** Replace one hardcoded CIDR with an input variable. Do not use `count`, `for_each`, loops, `locals`, or modules.

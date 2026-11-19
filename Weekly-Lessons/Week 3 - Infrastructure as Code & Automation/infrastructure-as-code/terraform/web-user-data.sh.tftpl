@@ -1,0 +1,81 @@
+#!/bin/bash
+set -euxo pipefail
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y python3-venv python3-pip
+mkdir -p /opt/harborpoint
+python3 -m venv /opt/harborpoint/venv
+/opt/harborpoint/venv/bin/pip install flask pymysql gunicorn
+cat >/opt/harborpoint/app.py <<'PY'
+import os
+from flask import Flask, jsonify, request
+import pymysql
+app = Flask(__name__)
+
+def connection():
+    return pymysql.connect(host=os.environ['DB_HOST'], user='cloudapp',
+        password=os.environ['DB_PASSWORD'], database='cloudcapstone',
+        connect_timeout=5, cursorclass=pymysql.cursors.DictCursor)
+
+@app.get('/')
+def index():
+    return '<h1>HarborPoint Customer Portal</h1><p>Cloud Accelerator Week 3</p><a href="/customers">View Customers</a>'
+
+@app.get('/health')
+def health():
+    try:
+        db = connection()
+        with db.cursor() as cur:
+            cur.execute('SELECT 1')
+        db.close()
+        return jsonify(application='healthy', database='connected')
+    except Exception:
+        return jsonify(application='running', database='unavailable'), 503
+
+@app.route('/customers', methods=['GET', 'POST'])
+def customers():
+    if request.method == 'POST':
+        body = request.get_json(silent=True) or {}
+        name, email = body.get('name'), body.get('email')
+        if not isinstance(name, str) or not isinstance(email, str):
+            return jsonify(error='Name and email required'), 400
+        name, email = name.strip(), email.strip()
+        if not name or not email or len(name) > 100 or len(email) > 150:
+            return jsonify(error='Invalid name or email'), 400
+    try:
+        db = connection()
+        with db.cursor() as cur:
+            if request.method == 'GET':
+                cur.execute('SELECT id, name, email FROM customers ORDER BY id')
+                result = cur.fetchall()
+            else:
+                cur.execute('INSERT INTO customers (name,email) VALUES (%s,%s)', (name,email))
+                result = dict(id=cur.lastrowid, name=name, email=email)
+        if request.method == 'POST':
+            db.commit()
+        db.close()
+        return jsonify(result), (201 if request.method == 'POST' else 200)
+    except Exception:
+        return jsonify(error='Database unavailable'), 503
+PY
+cat >/etc/harborpoint.env <<'ENV'
+DB_HOST=${db_host}
+DB_PASSWORD=${db_password}
+ENV
+chmod 600 /etc/harborpoint.env
+cat >/etc/systemd/system/harborpoint.service <<'SERVICE'
+[Unit]
+Description=HarborPoint Flask Application
+After=network-online.target
+Wants=network-online.target
+[Service]
+WorkingDirectory=/opt/harborpoint
+EnvironmentFile=/etc/harborpoint.env
+ExecStart=/opt/harborpoint/venv/bin/gunicorn --bind 0.0.0.0:80 --workers 2 app:app
+Restart=always
+User=root
+[Install]
+WantedBy=multi-user.target
+SERVICE
+systemctl daemon-reload
+systemctl enable --now harborpoint

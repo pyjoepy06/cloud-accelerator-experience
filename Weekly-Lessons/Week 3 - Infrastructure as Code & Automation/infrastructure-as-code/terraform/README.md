@@ -1,21 +1,17 @@
-# Terraform — Start Here
+# Week 3: Static Terraform web application lab
 
-This is the **first** Week 3 lesson. [Open the static example](main.tf).
+Start with `main.tf` (VPC, three subnets, three route tables, routes and associations), then read `servers.tf` (two security groups, two EC2 instances). The supplied `.tftpl` files install a Flask web application and MySQL database.
 
-## What to notice
-- `resource "aws_vpc" "class_vpc"` creates one VPC.
-- `aws_vpc.class_vpc.id` is a **reference** to that resource, not a variable you have to supply.
-- There are three separate subnet blocks, three route-table blocks, three associations, three security groups, and three EC2 blocks.
-- All subnet CIDRs, names, ports, instance types, and region are written directly in `main.tf`.
-- The **only** `data` block looks up the current Amazon Linux AMI through AWS Systems Manager. This avoids hardcoding an AMI ID that may become obsolete.
-- No `variables.tf`, `terraform.tfvars`, `locals`, `count`, `for_each`, or modules.
+- **Web application EC2** deploys to the **application-tier subnet** (`10.30.2.0/24`).
+- **MySQL EC2** deploys to the **database-tier subnet** (`10.30.3.0/24`).
+- The web-tier subnet (`10.30.1.0/24`) is left empty for teaching the three-subnet layout.
+- No modules, `locals`, `count`, `for_each`, loops, or input variables. Literal CIDRs, region, instance types and ports are used.
+- The AMI is looked up using `data "aws_ami"`; a `random_password` resource creates the database password rather than putting credentials in Git. Terraform state and EC2 user data still contain the password: **lab account only**.
 
-## Before starting
-Install Terraform and AWS CLI (see the repository's `How-To` directory). Configure AWS credentials using an AWS profile or IAM Identity Center. Use a dedicated lab account and the `us-east-1` region. You need permissions to create VPC networking, security groups, and EC2 instances and to read the public SSM AMI parameter.
+## Important classroom networking compromise
+To install packages via `apt` **without a costly NAT Gateway**, the app and database subnets have Internet Gateway routes and the instances receive public IPv4 addresses. The DB security group **does not permit inbound internet access**: port 3306 is allowed only from the web security group. These are **not production-private subnets**. A production design would keep the database private and provide controlled outbound access for bootstrapping. EC2 and public IPv4 addresses may incur charges.
 
-## Run
-From this folder:
-
+## Commands
 ```bash
 aws sts get-caller-identity
 terraform init
@@ -23,23 +19,17 @@ terraform fmt
 terraform validate
 terraform plan
 terraform apply
-```
-
-Type `yes` only after reviewing the plan. In AWS Console, locate resources with the `week3-` prefix.
-
-## Understand the design
-- **Web subnet:** public IPv4 address on launch, default route to Internet Gateway, inbound TCP/80 permitted. No web server software is installed, so browsing the public IP will **not** display a website.
-- **App subnet:** no internet route, inbound TCP/8080 allowed only from the web security group.
-- **DB subnet:** no internet route, inbound TCP/3306 allowed only from the app security group. The EC2 instance is **not** an installed database.
-- Every subnet also has the automatically provided VPC-local route. No NAT Gateway, load balancer, RDS, SSH ingress, or remote state is included.
-- All instances are in one Availability Zone. This is an educational architecture, not a production design.
-
-## Cleanup — required
-```bash
+terraform output web_url
 terraform destroy
 ```
 
-Review the plan, type `yes`, then confirm resources are gone in the AWS Console. EC2 instances and other resources can incur charges even in a lab account.
+Wait several minutes for user data to finish. Visit the web URL, `/health`, and `/customers`. If the app reports database unavailable, check EC2 user-data logs and allow MySQL initialization to complete.
 
-## Instructor's next step: variables (not included in starter code)
-After the static lab works, demonstrate how to replace **one** literal (for example `"10.30.0.0/16"`) with a declared input variable and `var.vpc_cidr`. Let students make the change; keep the committed starter file static.
+## Assignment
+1. Identify all three subnets and route tables in the AWS console.
+2. Find the two EC2 instances and explain why the web EC2 is in the application tier.
+3. Explain the security group rule allowing MySQL only from the web security group.
+4. Capture the application page and `/customers` output.
+5. Destroy the infrastructure and confirm cleanup.
+
+**Do not commit** `.terraform/`, state files, credentials, or plans. Run this only in a disposable AWS training account.
