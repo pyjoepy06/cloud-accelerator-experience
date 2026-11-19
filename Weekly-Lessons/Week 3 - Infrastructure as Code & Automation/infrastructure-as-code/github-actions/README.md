@@ -1,15 +1,7 @@
-# GitHub Actions
+# GitHub Actions — Preview Only
 
-Part of [Infrastructure As Code](../README.md).
+GitHub Actions can run Terraform checks automatically after code is pushed.
 
-## Objectives
+**Not required for Week 3's first lab.** First learn `terraform init`, `fmt`, `validate`, `plan`, `apply`, and `destroy` locally. Later, a simple workflow can run formatting and validation; avoid automatic infrastructure deployment until the class understands state, permissions, and approvals.
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
-
-## Learning materials
-
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
-
-## Lab guidance
-
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+[Start with Terraform](../terraform/README.md).

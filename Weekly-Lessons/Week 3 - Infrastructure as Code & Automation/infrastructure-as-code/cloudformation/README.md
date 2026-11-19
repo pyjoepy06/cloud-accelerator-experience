@@ -1,15 +1,7 @@
-# Cloudformation
+# CloudFormation — Brief Comparison
 
-Part of [Infrastructure As Code](../README.md).
+CloudFormation and Terraform both describe infrastructure as code. CloudFormation uses AWS templates; Terraform uses HCL.
 
-## Objectives
+**Week 3 hands-on work uses Terraform only.** No CloudFormation template is needed for this introductory lab.
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
-
-## Learning materials
-
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
-
-## Lab guidance
-
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+[Start with Terraform](../terraform/README.md).

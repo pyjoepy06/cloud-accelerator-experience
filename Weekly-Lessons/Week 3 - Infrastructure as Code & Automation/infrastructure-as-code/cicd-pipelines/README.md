@@ -1,15 +1,9 @@
-# CI/CD Pipelines
+# CI/CD Pipelines — Concept Only
 
-Part of [Infrastructure As Code](../README.md).
+A pipeline runs repeatable checks and deployment steps. For Week 3, focus on understanding this sequence:
 
-## Objectives
+```text
+Edit Terraform -> terraform fmt -> terraform validate -> terraform plan -> human review -> terraform apply
+```
 
-Describe the architecture, tradeoffs, security, cost, and operational considerations for this topic.
-
-## Learning materials
-
-Coming soon: lesson notes, diagrams, guided labs, and exercises as applicable.
-
-## Lab guidance
-
-Use a dedicated AWS training environment and billing alerts. Never commit secrets. Include validation and teardown instructions when adding deployments.
+Students run these steps **manually** in the [guided lab](../labs/README.md). We will not set up automated `apply`, remote state, OIDC, or deployment approvals in this beginner exercise.
