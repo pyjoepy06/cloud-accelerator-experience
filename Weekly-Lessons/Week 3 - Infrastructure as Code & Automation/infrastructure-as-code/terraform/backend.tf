@@ -1,13 +1,13 @@
 
-terraform {
-  backend "s3" {
-    bucket       = "cloud-accelerator-tfstate-948806324987"
-    key          = "week3/terraform.tfstate"
-    region       = "us-east-1"
-    encrypt      = true
-    use_lockfile = true
-  }
-}
+# terraform {
+#   backend "s3" {
+#     bucket       = "cloud-accelerator-tfstate-948806324987"
+#     key          = "week3/terraform.tfstate"
+#     region       = "us-east-1"
+#     encrypt      = true
+#     use_lockfile = true
+#   }
+# }
 
 ##Notes about backend.tf resource
 
