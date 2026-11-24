@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Cloud Accelerator - GitHub Actions Terraform IAM role
+Parameters:
+  TerraformStateBucket:
+    Type: String
+    Description: Existing S3 state bucket name
+  TerraformStateKey:
+    Type: String
+    Default: week3/terraform.tfstate
+  GitHubOwner:
+    Type: String
+  GitHubOwnerId:
+    Type: String
+    AllowedPattern: '[0-9]+'
+  GitHubRepository:
+    Type: String
+  GitHubRepositoryId:
+    Type: String
+    AllowedPattern: '[0-9]+'
+  GitHubBranch:
+    Type: String
+    Default: main
+  GitHubApplyEnvironment:
+    Type: String
+    Default: terraform-apply
+  GitHubDestroyEnvironment:
+    Type: String
+    Default: terraform-destroy
+Resources:
+  GitHubActionsTerraformRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: GitHubActions-Terraform-Role
+      Description: GitHub Actions OIDC role for Terraform VPC lab
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+                'token.actions.githubusercontent.com:sub':
+                  - !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepository}@${GitHubRepositoryId}:ref:refs/heads/${GitHubBranch}'
+                  - !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepository}@${GitHubRepositoryId}:environment:${GitHubApplyEnvironment}'
+                  - !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepository}@${GitHubRepositoryId}:environment:${GitHubDestroyEnvironment}'
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonVPCFullAccess'
+      Policies:
+        - PolicyName: TerraformRemoteStateAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ListTerraformStateBucket
+                Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${TerraformStateBucket}'
+              - Sid: ManageTerraformState
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${TerraformStateBucket}/${TerraformStateKey}'
+              - Sid: ManageTerraformStateLock
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${TerraformStateBucket}/${TerraformStateKey}.tflock'
+      Tags:
+        - Key: Name
+          Value: GitHubActions-Terraform-Role
+        - Key: Project
+          Value: Cloud-Accelerator-Experience
+        - Key: ManagedBy
+          Value: CloudFormation
+Outputs:
+  GitHubActionsRoleName:
+    Value: !Ref GitHubActionsTerraformRole
+  GitHubActionsRoleArn:
+    Value: !GetAtt GitHubActionsTerraformRole.Arn
+  TerraformStateBucketName:
+    Value: !Ref TerraformStateBucket
+  TerraformStateObjectKey:
+    Value: !Ref TerraformStateKey
